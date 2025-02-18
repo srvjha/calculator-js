@@ -93,12 +93,14 @@ operatorCollection.forEach(operator => {
 });
 
 features.forEach((feature) => {
+   
     feature.addEventListener("click", () => {
+        console.log(feature.value)
         if (feature.innerText === "AC") {
             inputExpression = [];
             input.value = ""
         }
-        if (feature.innerText === "Back") {
+        if (feature.value=== "back") {
             inputExpression.pop();
             input.value = inputExpression.join("")
         }
