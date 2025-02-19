@@ -12,7 +12,8 @@ const operators = {
     '*': (a, b) => a * b,
     '/': (a, b) => a / b,
     '^': (a, b) => Math.pow(a, b),
-    '.':(a, b) => `${a}.${b}`
+    '.':(a, b) => `${a}.${b}`,
+    '%': (a, b) => (a / 100) * b
 };
 
 function mathOperator(operator) {
@@ -23,6 +24,7 @@ function mathOperator(operator) {
     else if (operator === "➗") return "/"
     else if (operator === "^") return "^"
     else if (operator === ".") return "."
+    else if (operator === "%") return "%"
 }
 
 function evaluateExpression(expressionArray) {
