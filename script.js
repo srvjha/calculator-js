@@ -11,16 +11,18 @@ const operators = {
     '-': (a, b) => a - b,
     '*': (a, b) => a * b,
     '/': (a, b) => a / b,
-    '^': (a, b) => a ^ b
+    '^': (a, b) => Math.pow(a, b),
+    '.':(a, b) => `${a}.${b}`
 };
 
 function mathOperator(operator) {
-    console.log("operator: ", operator)
+    //console.log("operator: ", operator)
     if (operator === "+") return "+"
     else if (operator === "-") return "-"
     else if (operator === "x") return "*"
     else if (operator === "➗") return "/"
     else if (operator === "^") return "^"
+    else if (operator === ".") return "."
 }
 
 function evaluateExpression(expressionArray) {
@@ -33,15 +35,16 @@ function evaluateExpression(expressionArray) {
     let numConcat = ""
     for (let i = 0; i < expressionArray.length; i++) {
 
-        if (typeof expressionArray[i] === "number") {
+        if (typeof expressionArray[i] === "number" || expressionArray[i] === ".") {
             numConcat += expressionArray[i];
 
-            if (num1 !== undefined && num2 === undefined && typeof expressionArray[i + 1] !== "number") {
+            if ((num1 !== undefined && num2 === undefined) && (typeof expressionArray[i + 1] !== "number" && expressionArray[i + 1] !== ".")) {
                 num2 = Number(numConcat);
-                console.log(operator)
+                //console.log(operator)
                 let op = mathOperator(operator)
-                console.log({ op, num1, num2 })
+               //console.log({ op, num1, num2 })
                 numConcat = operators[op](num1, num2);
+               // console.log({numConcat})
                 operator = "";
                 num2 = undefined
             }
@@ -64,8 +67,9 @@ numberCollection.forEach(number => {
             input.value = inputExpression.join("");
             isResult = false
         }
-
+        //console.log("before: ",inputExpression)
         inputExpression.push(Number(number.innerText));
+        //console.log("after: ",inputExpression)
         input.value = inputExpression.join("");
     })
 });
@@ -73,19 +77,24 @@ numberCollection.forEach(number => {
 operatorCollection.forEach(operator => {
 
     operator.addEventListener("click", () => {
+        //console.log("idhr hai hum", inputExpression)
 
-        if (inputExpression.length > 0) {
+        if (inputExpression.length > 0 || inputExpression[1]!==(".")) {
+            //console.log(inputExpression[1])
 
-
-            isResult = false
 
             if (typeof inputExpression[inputExpression.length - 1] === "number") {
                 inputExpression.push(operator.innerText);
                 input.value = inputExpression.join("")
+                isResult = false
             }
             else {
-                inputExpression[inputExpression.length - 1] = operator.innerText
-                input.value = inputExpression.join("")
+                if(inputExpression[inputExpression.length - 1] !== "." ){
+                    //console.log("input: ",inputExpression[inputExpression.length - 1])
+                    inputExpression[inputExpression.length - 1] = operator.innerText
+                    input.value = inputExpression.join("")
+                }
+              
             }
 
         }
@@ -95,7 +104,7 @@ operatorCollection.forEach(operator => {
 features.forEach((feature) => {
    
     feature.addEventListener("click", () => {
-        console.log(feature.value)
+        //console.log(feature.value)
         if (feature.innerText === "AC") {
             inputExpression = [];
             input.value = ""
@@ -105,14 +114,36 @@ features.forEach((feature) => {
             input.value = inputExpression.join("")
         }
         if (feature.innerText === ".") {
-            inputExpression.push(feature.innerText.trim());
-            input.value = inputExpression.join("")
+            if (
+                inputExpression.length === 0 || 
+                typeof inputExpression[inputExpression.length - 1] !== "number"
+            ) {
+                inputExpression.push(0, feature.innerText.trim());
+            } else {
+               
+                let lastNum = "";
+                for (let i = inputExpression.length - 1; i >= 0; i--) {
+                    if (typeof inputExpression[i] !== "number" && inputExpression[i] !== ".") {
+                        break;
+                    }
+                    lastNum = inputExpression[i] + lastNum;
+                }
+        
+              
+                if (!lastNum.includes(".")) {
+                    inputExpression.push(feature.innerText.trim());
+                }
+            }
+        
+            input.value = inputExpression.join("");
         }
+        
         if (feature.innerText === "=") {
-            console.log(inputExpression);
+            //console.log(inputExpression);
             const result = evaluateExpression(inputExpression);
             inputExpression = [];
-            inputExpression.push(result)
+            inputExpression.push(Number(result.toFixed(2)))
+            //console.log(typeof result)
             input.value = inputExpression
             isResult = true;
 
