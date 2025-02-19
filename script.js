@@ -116,7 +116,8 @@ features.forEach((feature) => {
         if (feature.innerText === ".") {
             if (
                 inputExpression.length === 0 || 
-                typeof inputExpression[inputExpression.length - 1] !== "number"
+               ( typeof inputExpression[inputExpression.length - 1] !== "number" &&
+                inputExpression[inputExpression.length - 1] !==".")
             ) {
                 inputExpression.push(0, feature.innerText.trim());
             } else {
